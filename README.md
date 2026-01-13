@@ -1,9 +1,9 @@
 # IMDB Movie Review Sentiment Analysis
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.10%2B-blue" />
-  <img src="https://img.shields.io/badge/TensorFlow-2.15-orange" />
-  <img src="https://img.shields.io/badge/Streamlit-App-red" />
-  <img src="https://img.shields.io/badge/License-MIT-green" />
+  <img src="https://img.shields.io/badge/Python-3.10%2B-blue" alt="Python" />
+  <img src="https://img.shields.io/badge/TensorFlow-2.15-orange" alt="TensorFlow" />
+  <img src="https://img.shields.io/badge/Streamlit-App-red" alt="Streamlit" />
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License" />
 </p>
 
 An **end-to-end Deep Learning web application** that classifies movie reviews as **Positive** or **Negative** using a **Simple Recurrent Neural Network (RNN)** trained on the **IMDB Movie Reviews dataset**.
@@ -42,10 +42,10 @@ The application follows a standard NLP pipeline:
 ```mermaid
 graph LR
     A[User Input] --> B[Text Preprocessing]
-    B --> C[Tokenization & Padding]
+    B --> C["Tokenization & Padding"]
     C --> D[Embedding Layer]
     D --> E[Simple RNN Layer]
-    E --> F[Dense Layer (Sigmoid)]
+    E --> F["Dense Layer (Sigmoid)"]
     F --> G[Sentiment Prediction]
 ```
 
