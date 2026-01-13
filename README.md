@@ -10,17 +10,19 @@ An **end-to-end Deep Learning web application** that classifies movie reviews as
 The model is deployed as an **interactive Streamlit web app**, covering the complete ML lifecycle from training to deployment.
 
 ## 📑 Table of Contents
-- [Project Overview](#-project-overview)
-- [Model & Application Architecture](#️-model--application-architecture)
-- [Demo](#️-demo)
-- [Features](#-features)
-- [Tech Stack](#️-tech-stack)
-- [Project Structure](#-project-structure)
-- [How to Run the App Locally](#️-how-to-run-the-app-locally)
-- [Future Improvements](#-future-improvements)
+
+- [Project Overview](#project-overview)
+- [Model & Application Architecture](#model--application-architecture)
+- [Demo](#demo)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [How to Run the App Locally](#how-to-run-the-app-locally)
+- [Future Improvements](#future-improvements)
 - [Credits](#credits)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [Contributing](#contributing)
+- [License](#license)
+
 ---
 
 ## 📌 Project Overview
