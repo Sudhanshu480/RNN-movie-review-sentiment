@@ -49,17 +49,6 @@ graph LR
     F --> G[Sentiment Prediction]
 ```
 
-```mermaid
-graph LR
-    A[User Input] --> B[Text Preprocessing]
-    B --> C[Tokenization and Padding]
-    C --> D[Embedding Layer]
-    D --> E[Simple RNN Layer]
-    E --> F[Dense Layer - Sigmoid]
-    F --> G[Sentiment Prediction]
-
-```
-
 ### Data Flow Explanation
 
 1. **Input**
