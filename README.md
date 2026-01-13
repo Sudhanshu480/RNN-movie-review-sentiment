@@ -89,13 +89,12 @@ graph LR
 ---
 
 ## ✨ Features
-
-✔ Interactive and responsive Streamlit UI
-✔ Real-time sentiment inference
-✔ Confidence score and polarity visualization
-✔ Example input buttons for quick testing
-✔ Robust handling of unseen / rare words
-✔ Deployment-safe TensorFlow model loading
+- ✔ Interactive and responsive Streamlit UI
+- ✔ Real-time sentiment inference
+- ✔ Confidence score and polarity visualization
+- ✔ Example input buttons for quick testing
+- ✔ Robust handling of unseen / rare words
+- ✔ Deployment-safe TensorFlow model loading
 
 ---
 
