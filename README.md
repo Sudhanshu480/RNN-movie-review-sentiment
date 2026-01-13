@@ -161,7 +161,6 @@ Potential extensions for this project:
 ---
 
 ## 👨‍💻 Credits
-
 Developed by **Sudhanshu Kumar**
 GitHub: [https://github.com/Sudhanshu480](https://github.com/Sudhanshu480)
 
