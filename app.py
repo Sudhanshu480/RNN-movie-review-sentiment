@@ -1,188 +1,167 @@
 import streamlit as st
 import numpy as np
-import tensorflow as tf
 import time
-
+import tensorflow as tf
 from tensorflow.keras.datasets import imdb
 from tensorflow.keras.preprocessing import sequence
-from tensorflow.keras.models import load_model 
-from tensorflow.keras.layers import SimpleRNN 
+from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import SimpleRNN
 
-# =====================================================
+# -------------------------------------------------
 # PAGE CONFIG
-# =====================================================
+# -------------------------------------------------
 st.set_page_config(
     page_title="IMDB Sentiment Analyzer",
     page_icon="🎬",
     layout="centered"
 )
 
-# =====================================================
-# SESSION STATE
-# =====================================================
-if "user_input_text" not in st.session_state:
-    st.session_state.user_input_text = ""
+# -------------------------------------------------
+# SESSION STATE MANAGEMENT (For Clear Button)
+# -------------------------------------------------
+if 'user_input_text' not in st.session_state:
+    st.session_state['user_input_text'] = ''
 
 def clear_text():
-    st.session_state.user_input_text = ""
+    st.session_state['user_input_text'] = ''
 
 def set_example_positive():
-    st.session_state.user_input_text = (
-        "This movie was absolutely fantastic. "
-        "The acting was brilliant and the story was engaging."
-    )
+    st.session_state['user_input_text'] = "This movie was absolutely fantastic! The acting was great and the plot kept me on the edge of my seat."
 
 def set_example_negative():
-    st.session_state.user_input_text = (
-        "I hated this movie. It was boring, poorly written, "
-        "and a complete waste of time."
-    )
+    st.session_state['user_input_text'] = "I hated this film. It was a complete waste of time and the script was terrible."
 
-# =====================================================
-# SAFE SimpleRNN (TF VERSION FIX)
-# =====================================================
-from tensorflow.keras.layers import InputLayer
-
-class InputLayerSafe(InputLayer):
-    def __init__(self, *args, **kwargs):
-        kwargs.pop("batch_shape", None)
-        super().__init__(*args, **kwargs)
-
+# -------------------------------------------------
+# CUSTOM CLASS (Fix for TF Version Mismatches)
+# -------------------------------------------------
+# Keep this if you are moving between different TF versions (e.g. Colab -> Local)
 class SimpleRNNSafe(SimpleRNN):
     def __init__(self, *args, **kwargs):
         kwargs.pop("time_major", None)
         super().__init__(*args, **kwargs)
 
-# =====================================================
-# CONSTANTS (MUST MATCH TRAINING)
-# =====================================================
-NUM_WORDS = 10000
-MAX_LEN = 500
-OOV_INDEX = 2
-INDEX_OFFSET = 3
-
-# =====================================================
+# -------------------------------------------------
 # LOAD MODEL & WORD INDEX
-# =====================================================
+# -------------------------------------------------
 @st.cache_resource
-def load_artifacts():
+def load_sentiment_model():
+    # Note: Loading the specific file name you saved in the notebook
     model = load_model(
-        "sudha_simple_rnn_model.h5",
-        custom_objects={
-        "SimpleRNN": SimpleRNNSafe,
-        "InputLayer": InputLayerSafe
-        },
-        compile=False
+        "sudha_simple_rnn_model.h5", 
+        custom_objects={"SimpleRNN": SimpleRNNSafe},
+        compile=False # We don't need to compile for inference, speeds up loading
     )
     word_index = imdb.get_word_index()
     return model, word_index
 
 try:
-    model, word_index = load_artifacts()
+    model, word_index = load_sentiment_model()
 except Exception as e:
-    st.error(f"❌ Failed to load model: {e}")
+    st.error(f"Error loading model: {e}")
     st.stop()
 
-# =====================================================
-# TEXT PREPROCESSING (FIXED & SAFE)
-# =====================================================
-def preprocess_text(text: str):
+# -------------------------------------------------
+# HELPER FUNCTIONS
+# -------------------------------------------------
+def preprocess_text(text, maxlen=500):
     words = text.lower().split()
-    encoded = []
-
-    for word in words:
-        idx = word_index.get(word, OOV_INDEX)
-        if idx >= NUM_WORDS:
-            idx = OOV_INDEX
-        encoded.append(idx + INDEX_OFFSET)
-
-    padded = sequence.pad_sequences(
-        [encoded],
-        maxlen=MAX_LEN
+    # Using the +3 offset to match IMDB dataset indexing (0,1,2 reserved)
+    encoded_review = [word_index.get(word, 2) + 3 for word in words]
+    padded_review = sequence.pad_sequences(
+        [encoded_review],
+        maxlen=maxlen
     )
-    return padded
+    return padded_review
 
-# =====================================================
-# PREDICTION
-# =====================================================
-def predict_sentiment(text: str):
+def predict_sentiment(text):
     processed = preprocess_text(text)
-    score = float(model.predict(processed, verbose=0)[0][0])
-
-    if score >= 0.5:
-        sentiment = "Positive"
+    prediction = model.predict(processed, verbose=0)
+    score = prediction[0][0]
+    
+    sentiment = "Positive" if score >= 0.5 else "Negative"
+    
+    # Calculate confidence (distance from 0.5 decision boundary)
+    if sentiment == "Positive":
         confidence = score
     else:
-        sentiment = "Negative"
         confidence = 1 - score
-
+        
     return sentiment, score, confidence
 
-# =====================================================
+# -------------------------------------------------
 # SIDEBAR
-# =====================================================
+# -------------------------------------------------
 with st.sidebar:
     st.header("⚙️ Model Info")
     st.write("Architecture: **Simple RNN**")
     st.write("Dataset: **IMDB Reviews**")
-    st.write("Vocabulary Size: **10,000**")
-    st.write("Sequence Length: **500**")
     st.markdown("---")
-    st.write("This app performs sentiment analysis on movie reviews.")
+    st.write("This model was trained to classify movie reviews as either positive or negative based on sentiment analysis.")
 
-# =====================================================
+# -------------------------------------------------
 # MAIN UI
-# =====================================================
-st.title("🎬 Movie Review Sentiment Analysis")
-st.subheader("Simple RNN | End-to-End NLP App")
+# -------------------------------------------------
+st.title("🎬 Movie Review Sentiment")
+st.subheader("Simple RNN Analysis")
 
-st.write("Try an example or enter your own review:")
+# Quick Test Buttons
+st.write("Don't want to type? Try an example:")
+col_ex1, col_ex2 = st.columns(2)
+with col_ex1:
+    st.button("😊 Load Positive Review", on_click=set_example_positive)
+with col_ex2:
+    st.button("😡 Load Negative Review", on_click=set_example_negative)
 
-ex1, ex2 = st.columns(2)
-with ex1:
-    st.button("😊 Positive Example", on_click=set_example_positive)
-with ex2:
-    st.button("😡 Negative Example", on_click=set_example_negative)
-
+# Input Area
 user_input = st.text_area(
-    "Enter your review:",
-    height=160,
-    key="user_input_text",
-    placeholder="Type a movie review here..."
+    "Enter your review here:",
+    height=150,
+    placeholder="Type something...",
+    key='user_input_text' # Binds this widget to session state
 )
 
-col1, col2 = st.columns(2)
+col1, col2 = st.columns([1, 1])
 with col1:
     analyze = st.button("🔍 Analyze Sentiment", type="primary", use_container_width=True)
 with col2:
+    # On click, this runs the clear_text function to reset session state
     st.button("🧹 Clear Text", on_click=clear_text, use_container_width=True)
 
-# =====================================================
-# OUTPUT
-# =====================================================
+# -------------------------------------------------
+# PREDICTION LOGIC
+# -------------------------------------------------
 if analyze:
     if not user_input.strip():
-        st.warning("⚠️ Please enter some text.")
+        st.warning("⚠️ Please enter some text to analyze.")
     else:
-        with st.spinner("Analyzing sentiment..."):
-            time.sleep(0.3)  # UX delay
+        with st.spinner("🔎 Analyzing sentiment..."):
+            # Small delay so spinner is visible (UX best practice)
+            time.sleep(0.3)
+
             sentiment, score, confidence = predict_sentiment(user_input)
+
+            # Ensure native Python floats (Streamlit-safe)
+            score = float(score)
+            confidence = float(confidence)
 
         st.markdown("---")
 
+        # Result Display
         if sentiment == "Positive":
-            st.success("✅ **Positive Review**")
+            st.success(f"✅ **Sentiment: Positive**")
         else:
-            st.error("❌ **Negative Review**")
+            st.error(f"❌ **Sentiment: Negative**")
 
-        m1, m2 = st.columns(2)
-        with m1:
+        # Metrics
+        m_col1, m_col2 = st.columns(2)
+        with m_col1:
             st.metric("Confidence", f"{confidence * 100:.2f}%")
-        with m2:
+        with m_col2:
             st.metric("Model Score", f"{score:.4f}")
 
+        # Polarity Bar
         st.caption("Sentiment Polarity (0 = Negative, 1 = Positive)")
         st.progress(score)
 
 st.markdown("---")
-st.caption("Built with TensorFlow & Streamlit | Simple RNN IMDB Sentiment App")
+st.caption("Built with TensorFlow & Streamlit")
