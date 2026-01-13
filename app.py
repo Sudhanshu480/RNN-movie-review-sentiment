@@ -41,6 +41,13 @@ def set_example_negative():
 # =====================================================
 # SAFE SimpleRNN (TF VERSION FIX)
 # =====================================================
+from tensorflow.keras.layers import InputLayer
+
+class InputLayerSafe(InputLayer):
+    def __init__(self, *args, **kwargs):
+        kwargs.pop("batch_shape", None)
+        super().__init__(*args, **kwargs)
+
 class SimpleRNNSafe(SimpleRNN):
     def __init__(self, *args, **kwargs):
         kwargs.pop("time_major", None)
@@ -61,7 +68,10 @@ INDEX_OFFSET = 3
 def load_artifacts():
     model = load_model(
         "sudha_simple_rnn_model.h5",
-        custom_objects={"SimpleRNN": SimpleRNNSafe},
+        custom_objects={
+        "SimpleRNN": SimpleRNNSafe,
+        "InputLayer": InputLayerSafe
+        },
         compile=False
     )
     word_index = imdb.get_word_index()
