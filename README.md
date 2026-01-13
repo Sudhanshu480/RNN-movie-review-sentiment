@@ -1,9 +1,10 @@
 # IMDB Movie Review Sentiment Analysis
-
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-orange)
-![Streamlit](https://img.shields.io/badge/Streamlit-App-red)
-![License](https://img.shields.io/badge/License-MIT-green)
+<p align="center">
+    ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+    ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15-orange)
+    ![Streamlit](https://img.shields.io/badge/Streamlit-App-red)
+    ![License](https://img.shields.io/badge/License-MIT-green)
+</p>
 
 An **end-to-end Deep Learning web application** that classifies movie reviews as **Positive** or **Negative** using a **Simple Recurrent Neural Network (RNN)** trained on the **IMDB Movie Reviews dataset**.
 The model is deployed as an **interactive Streamlit web app**, covering the complete ML lifecycle from training to deployment.
