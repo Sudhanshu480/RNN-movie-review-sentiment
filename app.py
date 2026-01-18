@@ -23,6 +23,7 @@ if 'user_input_text' not in st.session_state:
     st.session_state['user_input_text'] = ''
 
 def clear_text():
+
     st.session_state['user_input_text'] = ''
 
 def set_example_positive():
@@ -46,10 +47,14 @@ class SimpleRNNSafe(SimpleRNN):
 @st.cache_resource
 def load_sentiment_model():
     # Note: Loading the specific file name you saved in the notebook
+    # model = load_model(
+    #     # "sudha_simple_rnn_model.h5", 
+    #     # custom_objects={"SimpleRNN": SimpleRNNSafe},
+    #     compile=False # We don't need to compile for inference, speeds up loading
+    # )
     model = load_model(
-        "sudha_simple_rnn_model.h5", 
-        custom_objects={"SimpleRNN": SimpleRNNSafe},
-        compile=False # We don't need to compile for inference, speeds up loading
+    "sudha_simple_rnn_model_saved.keras",
+    compile=False
     )
     word_index = imdb.get_word_index()
     return model, word_index
