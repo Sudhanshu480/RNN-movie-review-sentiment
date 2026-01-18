@@ -18,7 +18,7 @@ The model is deployed as an **interactive Streamlit web app**, covering the comp
 - [Project Structure](#-project-structure)
 - [How to Run the App Locally](#️-how-to-run-the-app-locally)
 - [Future Improvements](#-future-improvements)
-- [Credits](#-credits(https://github.com/Sudhanshu480/RNN-movie-review-sentiment?tab=readme-ov-file#%E2%80%8D-credits))
+- [Credits](#-credits)
 - [Contributing](#-contributing)
 - [License](#-license)
 
